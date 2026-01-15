@@ -23,6 +23,7 @@ public class AuthService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtEncoder jwtEncoder;
+    private final CurrentUser currentUser;
 
     @Value("${security.jwt.issuer}")
     private String issuer;
@@ -69,4 +70,20 @@ public class AuthService {
                 .role(user.getRole())
                 .build();
     }
+
+    @Transactional
+    public void changePassword(String currentPassword, String newPassword) {
+        var userId = currentUser.id(); // viene del JWT sub
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid credentials"));
+
+        if (!passwordEncoder.matches(currentPassword, user.getPasswordHash())) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid credentials");
+        }
+
+        user.setPasswordHash(passwordEncoder.encode(newPassword));
+        userRepository.save(user);
+    }
+
 }

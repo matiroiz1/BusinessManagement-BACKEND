@@ -1,5 +1,6 @@
 package com.example.backgestcom.security.api;
 
+import com.example.backgestcom.security.api.dtos.ChangePasswordRequest;
 import com.example.backgestcom.security.api.dtos.LoginRequest;
 import com.example.backgestcom.security.api.dtos.LoginResponse;
 import com.example.backgestcom.security.application.AuthService;
@@ -25,4 +26,10 @@ public class AuthController {
     public Jwt me(@org.springframework.security.core.annotation.AuthenticationPrincipal Jwt jwt) {
         return jwt;
     }
+
+    @PatchMapping("/password")
+    public void changePassword(@Valid @RequestBody ChangePasswordRequest req) {
+        authService.changePassword(req.getCurrentPassword(), req.getNewPassword());
+    }
+
 }

@@ -67,7 +67,9 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/**").permitAll()
+                        // Public
+                        .requestMatchers(org.springframework.http.HttpMethod.POST, "/api/auth/login").permitAll()
+                        .requestMatchers(org.springframework.http.HttpMethod.GET, "/actuator/health", "/actuator/info").permitAll()
 
                         // Catalog
                         .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/catalog/**")
@@ -87,10 +89,11 @@ public class SecurityConfig {
                         .requestMatchers("/api/inventory/**")
                         .hasAnyRole("ADMIN","MANAGER","WAREHOUSE_OPERATOR")
 
-                        // Receiving (Purchase MVP)
+                        // Receiving
                         .requestMatchers("/api/goods-receipts/**")
                         .hasAnyRole("ADMIN","MANAGER","WAREHOUSE_OPERATOR")
 
+                        // Everything else requires JWT
                         .anyRequest().authenticated()
                 )
                 .oauth2ResourceServer(oauth2 -> oauth2
