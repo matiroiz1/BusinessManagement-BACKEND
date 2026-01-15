@@ -20,7 +20,6 @@ public class ProductController {
 
     @GetMapping("/{id}")
     public ProductResponse getById(@PathVariable UUID id) { return productService.getProductById(id); }
-
     @GetMapping("/by-sku/{sku}")
     public ProductResponse getBySku(@PathVariable String sku) { return productService.getProductBySku(sku); }
 
