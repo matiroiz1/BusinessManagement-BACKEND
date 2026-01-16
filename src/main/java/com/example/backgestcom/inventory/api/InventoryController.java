@@ -75,4 +75,9 @@ public class InventoryController {
                 .description(deposit.getDescription())
                 .build();
     }
+
+    @GetMapping("/stock/critical")
+    public List<StockItemResponse> getCriticalStock() {
+        return inventoryService.getCriticalStock();
+    }
 }

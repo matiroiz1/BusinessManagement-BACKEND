@@ -30,7 +30,7 @@ public class Sale {
     @Builder.Default
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false, length = 20)
-    private SaleStatus status = SaleStatus.DRAFT;
+    private SaleStatus status = SaleStatus.PENDING;
 
     @Column(name = "sold_by_user_id")
     private UUID soldByUserId; // system operator (User.id), not the customer

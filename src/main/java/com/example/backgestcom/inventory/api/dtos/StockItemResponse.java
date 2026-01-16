@@ -23,6 +23,7 @@ public class StockItemResponse {
     BigDecimal onHand;
     BigDecimal criticalThreshold;
     BigDecimal minimumThreshold;
+    String productName;
     String stockState;     // CRITICAL / LOW / OK (computed)
     Instant updatedAt;
 }

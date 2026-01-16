@@ -264,6 +264,13 @@ public class InventoryService {
         return toResponse(si);
     }
 
+    @Transactional(readOnly = true)
+    public List<StockItemResponse> getCriticalStock() {
+        return stockItemRepository.findCriticalItems()
+                .stream()
+                .map(this::toResponse)
+                .toList();
+    }
 
     /**
      * Helper method to map a StockItem entity to its corresponding Response DTO.
