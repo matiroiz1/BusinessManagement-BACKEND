@@ -36,7 +36,7 @@ public class SaleService {
         UUID soldByUserId = currentUser.id();
 
         Sale sale = new Sale();
-        sale.setStatus(SaleStatus.DRAFT);
+        sale.setStatus(SaleStatus.PENDING);
         sale.setSoldByUserId(soldByUserId);
         sale.setCustomerName(req.getCustomerName());
         sale.setCustomerDocument(req.getCustomerDocument());
@@ -83,8 +83,8 @@ public class SaleService {
         Sale sale = saleRepository.findById(saleId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Sale not found"));
 
-        if (sale.getStatus() != SaleStatus.DRAFT) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Sale is not in DRAFT status");
+        if (sale.getStatus() != SaleStatus.PENDING) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Sale is not in PENDING status");
         }
 
         BigDecimal subtotal = BigDecimal.ZERO;

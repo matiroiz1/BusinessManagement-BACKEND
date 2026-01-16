@@ -3,9 +3,11 @@ package com.example.backgestcom.inventory.api;
 import com.example.backgestcom.inventory.api.dtos.*;
 import com.example.backgestcom.inventory.api.dtos.AdjustStockRequest;
 import com.example.backgestcom.inventory.application.InventoryService;
+import com.example.backgestcom.inventory.domain.Deposit;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -43,10 +45,14 @@ public class InventoryController {
 
     /**
      * Returns current stock for a product in the default deposit.
+     * Si hay stock -> 200 OK con datos.
+     * Si no hay stock -> 204 No Content (Sin cuerpo, sin error rojo).
      */
     @GetMapping("/stock/by-product/{productId}")
-    public StockItemResponse getStock(@PathVariable UUID productId) {
-        return inventoryService.getStockByProduct(productId);
+    public ResponseEntity<StockItemResponse> getStock(@PathVariable UUID productId) {
+        return inventoryService.getStockByProduct(productId)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.noContent().build());
     }
 
     /**
@@ -55,5 +61,18 @@ public class InventoryController {
     @GetMapping("/movements/by-product/{productId}")
     public List<StockMovementResponse> movements(@PathVariable UUID productId) {
         return inventoryService.getMovements(productId);
+    }
+
+    /**
+     * Returns default deposit
+     */
+    @GetMapping("/deposits/default")
+    public DepositResponse getDefaultDeposit() {
+        Deposit deposit = inventoryService.getDefaultDeposit();
+        return DepositResponse.builder()
+                .id(deposit.getId())
+                .name(deposit.getName())
+                .description(deposit.getDescription())
+                .build();
     }
 }

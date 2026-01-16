@@ -7,7 +7,7 @@ package com.example.backgestcom.sales.domain;
  * CANCELLED: optional future state (would require stock rollback)
  */
 public enum SaleStatus {
-    DRAFT,
+    PENDING,
     CONFIRMED,
     CANCELLED
 }

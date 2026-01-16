@@ -16,6 +16,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -144,15 +145,15 @@ public class InventoryService {
 
     /**
      * Fetches the current stock balance for a specific product in the default deposit.
+     * Devuelve Optional en lugar de lanzar excepción si no encuentra stock.
      */
     @Transactional(readOnly = true)
-    public StockItemResponse getStockByProduct(UUID productId) {
+    public Optional<StockItemResponse> getStockByProduct(UUID productId) {
         Deposit deposit = getDefaultDeposit();
-        var si = stockItemRepository.findByProduct_IdAndDeposit_Id(productId, deposit.getId())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Stock not found"));
-        return toResponse(si);
+        // Usamos map para transformar si existe, o devolvemos empty si no
+        return stockItemRepository.findByProduct_IdAndDeposit_Id(productId, deposit.getId())
+                .map(this::toResponse);
     }
-
     /**
      * Retrieves the audit trail (Kardex) for a product, showing the last 200 movements.
      */
